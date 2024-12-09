@@ -32,7 +32,7 @@
             while (true) {
                 System.out.println("==================================================");
                 System.out.println("자판기입니다.(번호:상품(가격)-재고)");
-                for (int i = 0; i < productCount; i++) {
+                for (int i = 0; i < product.length; i++) {
                     System.out.printf("%d:%s(%dW)-%d개\n", i + 1, product[i], price[i], stock[i]);
                 }
                 System.out.println("==================================================");
