@@ -13,9 +13,14 @@ public class Car {
         this.power = power;
         this.name = name;
     }
-
+//파라미터 안줘도됨
     public String getNavigation(Car c) {
         if(c.navigation == true){
+            return "있습니다.";
+        }else return "없습니다.";
+    }
+    public String getNavigation() {
+        if(this.navigation == true){
             return "있습니다.";
         }else return "없습니다.";
     }
@@ -25,7 +30,7 @@ public class Car {
     }
 
     public String getColor() {
-        return color;
+        return this.color;
     }
 
     public void setColor(String color) {
@@ -49,9 +54,13 @@ public class Car {
             System.out.println("멈췄습니다.");
         }
     }
-
+//파라미터 안줘도됨
     void myCarPrint(Car car){
         System.out.println("나의 애마" + car.name + "는 " + car.brand + " 브랜드 " + car.power + " cc입니다.\n" +
                 "색상은 " + car.color + " 이고 , 네비게이션은 " + getNavigation(car));
+    }
+    void myCarPrint(){
+        System.out.println("나의 애마" + this.name + "는 " + this.brand + " 브랜드 " + this.power + " cc입니다.\n" +
+                "색상은 " + this.color + " 이고 , 네비게이션은 " + getNavigation());
     }
 }
