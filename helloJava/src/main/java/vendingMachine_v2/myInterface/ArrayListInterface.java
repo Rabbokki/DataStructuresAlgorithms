@@ -22,4 +22,6 @@ public interface ArrayListInterface {
 
     List<Product> findAll();
 
+    int findIndex(String name);
+
 }

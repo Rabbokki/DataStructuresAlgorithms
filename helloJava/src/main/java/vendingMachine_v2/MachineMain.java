@@ -42,11 +42,11 @@ public class MachineMain {
 
                         switch (adminMenuNumber) {
                             case 1:
-                                System.out.println("1.메뉴 등록");
+                                System.out.println("1.메뉴 등록"); // 완료
                                 adminView.insertMenu();
                                 break;
                             case 2:
-                                System.out.println("2.메뉴 삭제");
+                                System.out.println("2.메뉴 삭제"); //완료
                                 adminView.deleteMenu();
                                 break;
                             case 3:
@@ -57,12 +57,11 @@ public class MachineMain {
                                 System.out.println("4.재고 등록");
                                 adminView.updateStock();
                                 break;
-                            case 5:
+                            case 5://완료
                                 System.out.println("5.전체 목록 보기");
                                 adminView.viewAllList();
                                 break;
-                            case 6:
-                                System.out.println("6.이전");
+                            case 6://완료
                                 break;
                             default:
                                 System.out.println("잘못 입력 하셨습니다.");
@@ -71,7 +70,7 @@ public class MachineMain {
                     }
                     break;
                 case 5:
-                    System.out.println("5. 종료");
+                    System.out.println("5. 종료"); //완료
                     return;
                 default:
                     System.out.println("잘못 입력 하셨습니다.");

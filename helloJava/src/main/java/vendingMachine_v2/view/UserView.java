@@ -1,10 +1,13 @@
 package vendingMachine_v2.view;
 
-import vendingMachine_v2.MachineMain;
+import vendingMachine_v2.service.AdminService;
+import vendingMachine_v2.vo.Product;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class UserView {
+    AdminService adminService = new AdminService();
     public static int userMoney = 0;
     Scanner sc = new Scanner(System.in);
     public void insertCoin(){
@@ -44,7 +47,33 @@ public class UserView {
     }
 
     public void selectMenu(){
+        List<Product> allList = adminService.getAllList();
+        if(userMoney ==0){
+            System.out.println("동전을 먼저 투입하세요.");
+            return;
+        }
+
+        //내용출력
+        printHeader();
+        if (allList.size() == 0){
+            System.out.println("현재 자판기에 제품이 없습니다.");
+        }else {
+            //내용 출력
+            for (Product p : allList) {
+                System.out.println(p);
+            }
+        }
+
+
+        printLine();
         System.out.println("메뉴 선택 화면");
+    }
+
+    public void printHeader(){
+        System.out.println("===========메뉴===========");
+    }
+    public void printLine(){
+        System.out.println("=========================");
     }
 
 }

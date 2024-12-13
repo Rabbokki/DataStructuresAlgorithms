@@ -7,11 +7,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListRepository implements ArrayListInterface {
+
+    //상품목록(상품명,금액,재고) 정보를 담는 저장공간
+
     List<Product> productList = new ArrayList<>();
+
+    @Override
+    public int findIndex(String name) {
+        for (Product p : productList) {
+            if(p.getItem().equals(name)){
+                return productList.indexOf(p);
+            }
+        }
+
+        return -1;
+    }
 
     @Override
     public boolean insert(Product product) {
         productList.add(product);
+        System.out.println(productList);
         return true;
     }
 

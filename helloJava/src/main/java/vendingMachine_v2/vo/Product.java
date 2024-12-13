@@ -5,13 +5,18 @@ public class Product {
     private int price;
     private int stock;
 
+    public Product() {}
+
+    public Product(String item, int price, int stock) {
+        this.item = item;
+        this.price = price;
+        this.stock = stock;
+    }
+
     @Override
     public String toString() {
-        return "product{" +
-                "item : '" + item + '\'' +
-                ", price : " + price +
-                ", stock : " + stock +
-                '}';
+        return "제품명 : " + item  + "/ 가격 : " + price +
+                ", 재고 : " + stock;
     }
 
     public String getItem() {
