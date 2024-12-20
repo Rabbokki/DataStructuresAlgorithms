@@ -12,4 +12,6 @@ public interface ViewInterface {
     void searchNameView();
 
     void searchPhoneView();
+
+    void searchIdView();
 }

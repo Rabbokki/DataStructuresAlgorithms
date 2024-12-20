@@ -18,7 +18,6 @@ public class PhoneBookMain {
 
             switch (num){
                 case 1:
-                    System.out.println("입력");
                     view.insertView();
                     break;
                 case 2:

@@ -2,6 +2,8 @@ package db.dto;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class TelBookDTO {
     private Long id;
@@ -10,12 +12,20 @@ public class TelBookDTO {
     private String address;
     private String phone;
     private LocalDateTime createdAt;
+
     private LocalDateTime updateAt;
 
     @Override
     public String toString() {
+        String createDate = createdAt.format(
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        String updateDate = "";
+        if(updateAt != null){
+            updateDate = updateAt.format(
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        }
         String str = String.format("%d \t %s \t %d \t %s \t %s \t %s \t %s \t" ,
-                id, name, age, address , phone , createdAt, updateAt);
+                id, name, age, address , phone , createDate, updateDate);
 
         return str;
     }
@@ -60,10 +70,10 @@ public class TelBookDTO {
         this.phone = phone;
     }
 
-    public LocalDateTime getCreatedAt(Timestamp created_at) {
+
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -75,4 +85,11 @@ public class TelBookDTO {
     public void setUpdateAt(LocalDateTime updateAt) {
         this.updateAt = updateAt;
     }
+
+
+
+
+
+
+
 }

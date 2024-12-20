@@ -8,7 +8,7 @@ public class Runnable {
             System.out.println("Hello");
         }
     };
-    Runnable task2 = () -> System.out.println("Hello");
+//    Runnable task2 = () -> System.out.println("Hello");
 
 
 }

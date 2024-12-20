@@ -1,4 +1,4 @@
-package db.view;
+package exception;
 
 public class ExceptionTest {
 
