@@ -1,5 +1,6 @@
 package db.service;
 
+import db.dto.SearchResultDTO;
 import db.dto.TelBookDTO;
 import db.repository.PhoneBookRepository;
 
@@ -16,7 +17,7 @@ public class PhoneBookService implements ServiceInterface{
     @Override
     public int updateService(TelBookDTO dto) {
         System.out.println("[PhoneBookRepository]-updateService");
-        return 0;
+        return bookRepository.updateData(dto);
     }
 
     @Override
@@ -32,19 +33,19 @@ public class PhoneBookService implements ServiceInterface{
     }
 
     @Override
-    public TelBookDTO findByIdService(Long findId) {
-        System.out.println("[PhoneBookRepository]-findByIdService");
-        return bookRepository.findById(findId);
+    public TelBookDTO findByIdService(Long id) {
+//        System.out.println("[PhoneBookService]-findByIdService");
+        return bookRepository.findById(id);
     }
 
     @Override
-    public List<TelBookDTO> findByNameService(String name) {
+    public List<SearchResultDTO> findByNameService(String name) {
         System.out.println("[PhoneBookRepository]-findByNameService");
         return bookRepository.findByName(name);
     }
 
     @Override
-    public List<TelBookDTO> findByPhoneService(String phone) {
+    public List<SearchResultDTO> findByPhoneService(String phone) {
         System.out.println("[PhoneBookRepository]-findByPhoneService");
         return bookRepository.findByPhone(phone);
     }

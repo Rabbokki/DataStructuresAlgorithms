@@ -1,5 +1,6 @@
 package db.service;
 
+import db.dto.SearchResultDTO;
 import db.dto.TelBookDTO;
 
 import java.util.List;
@@ -16,10 +17,11 @@ public interface ServiceInterface {
     //ID로 검색
     TelBookDTO findByIdService(Long id);
 
-    //이름으로 검색
-    List<TelBookDTO> findByNameService(String name);
+    // 이름으로 검색
+    List<SearchResultDTO> findByNameService(String name);
 
-    //전화번호로 검색
-    List<TelBookDTO> findByPhoneService(String phone);
+    // 전화번호로 검색
+    List<SearchResultDTO> findByPhoneService(String phone);
+
 
 }

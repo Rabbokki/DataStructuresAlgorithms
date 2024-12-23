@@ -1,10 +1,12 @@
 package db.repository;
 
 import db.DBConn;
+import db.dto.SearchResultDTO;
 import db.dto.TelBookDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PhoneBookRepository implements RepositoryInterface{
@@ -39,11 +41,29 @@ public class PhoneBookRepository implements RepositoryInterface{
 
     @Override
     public int updateData(TelBookDTO dto) {
-        sql = "UPDATE phone_book set name = ";
+        sql = "UPDATE phone_book set ";
+        sql = sql + "name = ?, ";
+        sql = sql + "age = ?, ";
+        sql = sql + "address = ?, ";
+        sql = sql + "phone = ?, ";
+        sql = sql + "created_at = ?, ";
+        sql = sql + "updated_at = ?, ";
+        sql = sql + "WHERE id = ?";
 
-
-
-        System.out.println("[PhoneBookRepository]-updateData");
+        try {
+            psmt = dbConn.prepareStatement(sql);
+            psmt.setString(1, dto.getName());
+            psmt.setInt(2, dto.getAge());
+            psmt.setString(3, dto.getAddress());
+            psmt.setString(4, dto.getPhone());
+            psmt.setTimestamp(5,Timestamp.valueOf(dto.getCreatedAt()));
+            psmt.setTimestamp(6,Timestamp.valueOf(dto.getUpdateAt()));
+            psmt.setLong(7,dto.getId());
+            result = psmt.executeUpdate();
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 
@@ -103,45 +123,111 @@ public class PhoneBookRepository implements RepositoryInterface{
     }
 
     @Override
-    public TelBookDTO findById(Long findId) {
-        System.out.println("[PhoneBookRepository]-findById");
-        List<TelBookDTO> list = new PhoneBookRepository().getAllList();
+    public TelBookDTO findById(Long id) {
+//        System.out.println("[PhoneBookRepository]-findById");
+        TelBookDTO dto = new TelBookDTO();
+        ResultSet rs = null;
 
-        for (TelBookDTO dto : list) {
-            if(dto.getId() == findId){
-                return dto;
+        sql = "SELECT * FROM phone_book WHERE id = ?";
+        try {
+            psmt = dbConn.prepareStatement(sql);
+            psmt.setLong(1, id);
+            rs = psmt.executeQuery();
+
+            if (rs != null) {
+                while (rs.next()) {
+                    dto.setId(rs.getLong("id"));
+                    dto.setName(rs.getString("name"));
+                    dto.setAge(rs.getInt("age"));
+                    dto.setAddress(rs.getString("address"));
+                    dto.setPhone(rs.getString("phone"));
+                    dto.setCreatedAt(rs.getTimestamp("created_at")
+                            .toLocalDateTime());
+                    if (rs.getTimestamp("updated_at") != null) {
+                        dto.setUpdateAt(rs.getTimestamp("updated_at")
+                                .toLocalDateTime());
+                    }
+                }
             }
+            return dto;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public List<TelBookDTO> findByName(String name) {
-        System.out.println("[PhoneBookRepository]-findByName");
-        List<TelBookDTO> list = new PhoneBookRepository().getAllList();
-        List<TelBookDTO> result = new ArrayList<>();
+    public List<SearchResultDTO> findByName(String name) {
+//        System.out.println("[PhoneBookRepository]-findByName");
+        List<SearchResultDTO> dtoList = new ArrayList<>();
 
-        for (TelBookDTO dto : list) {
-            if(dto.getName().equals(name)){
-                result.add(dto);
+        sql = "SELECT name, age, address, phone FROM phone_book WHERE ";
+        sql = sql + "name LIKE CONCAT('%', ?, '%') ";
+        sql = sql + "ORDER BY name ASC";
+        ResultSet rs = null;
+        String searchName = "";
+        int searchAge = 0;
+        String searchAddress = "";
+        String searchPhone = "";
+
+        try {
+            psmt = dbConn.prepareStatement(sql);
+            psmt.setString(1, name);
+            rs = psmt.executeQuery();
+            // 읽어온 ResultSet을 하나씩 읽어서 리스트에 담기
+            while (rs.next()) {
+                searchName = rs.getString("name");
+                searchAge = rs.getInt("age");
+                searchAddress = rs.getString("address");
+                searchPhone = rs.getString("phone");
+                // 생성자를 이용해서 DTO 생성 후
+                // 리스트에 추가
+                dtoList.add(new SearchResultDTO(
+                        searchName,
+                        searchAge,
+                        searchAddress,
+                        searchPhone
+                ));
             }
+            rs.close();
+            psmt.close();
+            return dtoList;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        return result.isEmpty() ? null : result;
+        return Collections.emptyList();
     }
 
     @Override
-    public List<TelBookDTO> findByPhone(String phone) {
-        System.out.println("[PhoneBookRepository]-findByPhone");
-        List<TelBookDTO> list = new PhoneBookRepository().getAllList();
-        List<TelBookDTO> result = new ArrayList<>();
+    public List<SearchResultDTO> findByPhone(String phone) {
+//        System.out.println("[PhoneBookRepository]-findByPhone");
+        List<SearchResultDTO> list = new ArrayList<>();
 
-        for (TelBookDTO dto : list) {
-            if(dto.getPhone().equals(phone)){
-                result.add(dto);
+        sql = "SELECT name, age, address, phone FROM phone_book ";
+        sql = sql + "WHERE phone LIKE CONCAT('%', ?, '%') ";
+        sql = sql + "ORDER BY phone";
+        try {
+            psmt = dbConn.prepareStatement(sql);
+            psmt.setString(1, phone);
+            ResultSet rs = psmt.executeQuery();
+            while (rs.next()) {
+                String searchName = rs.getString("name");
+                int searchAge = rs.getInt("age");
+                String searchAddress = rs.getString("address");
+                String searchPhone = rs.getString("phone");
+                list.add(new SearchResultDTO(
+                        searchName,
+                        searchAge,
+                        searchAddress,
+                        searchPhone
+                ));
             }
+            rs.close();
+            psmt.close();
+            return list;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        return result.isEmpty() ? null : result;
+        return Collections.emptyList();
     }
 }

@@ -1,5 +1,6 @@
 package db.view;
 
+import db.dto.SearchResultDTO;
 import db.dto.TelBookDTO;
 import db.service.PhoneBookService;
 import exception.InputValidation;
@@ -148,29 +149,40 @@ public class TelBookView implements ViewInterface{
 
     @Override
     public void searchNameView() {
-        System.out.println("[TelBookView] - searchNameView");
-        System.out.println("이름 검색");
-        String findName = sc.next();
-
-        if (bookService.findByNameService(findName).isEmpty()){
-            System.out.println("찾는 이름이 없음");
-        }else {
-            System.out.println(bookService.findByNameService(findName));
+//        System.out.println("[TelBookView]-searchNameView");
+        System.out.println("이름으로 검색하는 화면입니다.");
+        System.out.println("검색할 이름의 일부나 전체를 입력하세요");
+        String keyword = sc.next();
+        List<SearchResultDTO> result = bookService.findByNameService(keyword);
+        linePrint();
+        printSearchTitle();
+        linePrint();
+        // 내용 출력
+        if (result.isEmpty()) {
+            System.out.println("검색 결과가 없습니다.");
+        } else {
+            result.forEach(x -> System.out.println(x));
         }
-
+        linePrint();
     }
 
     @Override
     public void searchPhoneView() {
-        System.out.println("[TelBookView] - searchPhoneView");
-        System.out.println("전화번호 검색 : ");
-        String phone = sc.next();
-
-        if (bookService.findByPhoneService(phone).isEmpty()){
-            System.out.println("찾는 전화번호 없음");
-        }else {
-            System.out.println(bookService.findByPhoneService(phone));
+//        System.out.println("[TelBookView]-searchPhoneView");
+        System.out.println("전화번호로 검색하는 화면입니다.");
+        System.out.println("검색할 전화번호의 일부나 전체를 입력하세요");
+        String keyword = sc.next();
+        List<SearchResultDTO> result = bookService
+                .findByPhoneService(keyword);
+        linePrint();
+        printSearchTitle();
+        linePrint();
+        if (result.isEmpty()) {
+            System.out.println("검색 결과가 없습니다.");
+        } else {
+            result.forEach(x -> System.out.println(x));
         }
+        linePrint();
     }
 
     @Override
@@ -185,5 +197,8 @@ public class TelBookView implements ViewInterface{
         }else {
             System.out.println("Id가 없습니다.");
         }
+    }
+    public void printSearchTitle() {
+        System.out.println("이름 \t  나이 \t 주소 \t \t 전화번호");
     }
 }
