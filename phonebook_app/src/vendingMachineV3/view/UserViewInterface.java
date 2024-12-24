@@ -1,6 +1,9 @@
 package vendingMachineV3.view;
 
+import vendingMachineV3.dto.UserDto;
+
 public interface UserViewInterface {
     boolean registerView();
-    void loginView();
+    boolean loginView();
+    void userBuyView();
 }

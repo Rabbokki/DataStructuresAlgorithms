@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ProductDto {
-    private Long pId;
+    private int pId;
     private String productName;
     private int price;
     private int stock;
@@ -43,11 +43,11 @@ public class ProductDto {
         this.updateAt = updateAt;
     }
 
-    public Long getpId() {
+    public int getpId() {
         return pId;
     }
 
-    public void setpId(Long pId) {
+    public void setpId(int pId) {
         this.pId = pId;
     }
 
