@@ -8,9 +8,27 @@ public class ProductDto {
     private String productName;
     private int price;
     private int stock;
+    private boolean status = true;
 
     private LocalDateTime createdAt;
     private LocalDateTime updateAt;
+
+    public ProductDto() {
+    }
+
+    public ProductDto(String productName, int price, int stock) {
+        this.productName = productName;
+        this.price = price;
+        this.stock = stock;
+    }
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
     @Override
     public String toString() {

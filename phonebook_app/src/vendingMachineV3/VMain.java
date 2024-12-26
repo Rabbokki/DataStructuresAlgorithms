@@ -1,6 +1,8 @@
 package vendingMachineV3;
 
+import vendingMachineV3.dto.LoginDto;
 import vendingMachineV3.dto.UserDto;
+import vendingMachineV3.view.AdminView;
 import vendingMachineV3.view.UserView;
 
 import java.util.Scanner;
@@ -9,6 +11,7 @@ public class VMain {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         UserView userView = new UserView();
+        AdminView adminView = new AdminView();
         boolean b = false;
 
         while (!b){
@@ -21,10 +24,15 @@ public class VMain {
                         break;
                     }else return;
                 case 2:
-                    if (userView.loginView()==true){
-                        userView.userBuyView();
-                        break;
-                    }else break;
+                    LoginDto loginDto = userView.loginView();
+                    if(loginDto == null){
+                        System.out.println("로그인이 필요합니다.");
+                    }else {
+                        userView.userBuyView(loginDto);
+                    }break;
+                case 1004:
+                    adminView.mainAdminView();
+                    break;
             }
         }
 

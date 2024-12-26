@@ -3,10 +3,15 @@ package vendingMachineV3.dto;
 public class LoginDto {
     String userId;
     String pwd;
+    String userMoney;
 
     public LoginDto(String userId, String pwd) {
         this.userId = userId;
         this.pwd = pwd;
+    }
+
+    public LoginDto(String userMoney) {
+        this.userMoney = userMoney;
     }
 
     public String getUserId() {

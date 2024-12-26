@@ -3,6 +3,7 @@ package vendingMachineV3.view;
 import vendingMachineV3.dto.LoginDto;
 import vendingMachineV3.dto.UserDto;
 import vendingMachineV3.repository.AdminRepository;
+import vendingMachineV3.service.AdminService;
 import vendingMachineV3.service.UserService;
 
 
@@ -13,7 +14,7 @@ import java.util.Scanner;
 public class UserView implements UserViewInterface {
     Scanner sc = new Scanner(System.in);
     UserService userService = new UserService();
-    AdminRepository adminRepository = new AdminRepository();
+
 
 
     @Override
@@ -29,7 +30,6 @@ public class UserView implements UserViewInterface {
         userDto.setUserName(sc.next());
         System.out.println("전화번호를 입력해주세요.");
         userDto.setTelNum(sc.next());
-        userDto.setUserMoney(0);
         userDto.setCreatedAt(LocalDateTime.now());
 
         int result = userService.registerService(userDto);
@@ -44,7 +44,7 @@ public class UserView implements UserViewInterface {
 
 
     @Override
-    public boolean loginView() {
+    public LoginDto loginView() {
 //        List<UserDto> userDtoList = adminRepository.getAllUserList();
 //        System.out.println("로그인 페이지 입니다.\n" +
 //                "아이디를 입력해주세요.");
@@ -73,34 +73,32 @@ public class UserView implements UserViewInterface {
 
         int result = userService.loginService(loginDto);
         if(result > 0){
-            System.out.println("로그인 성공!");
-            return true;
+            return loginDto;
         }else{
             System.out.println("로그인 실패!");
-            return false;
+            return null;
         }
 
     }
 
     @Override
-    public void userBuyView() {
+    public void userBuyView(LoginDto loginDto) {
         int menuNum = 0;
-        while (menuNum != 4){
-            System.out.println("1. 돈 충전 2. 잔돈반환 3. 메뉴선택 4. 관리자메뉴 5. 종료=>");
+        while (menuNum != 3){
+            System.out.println("1. 돈 충전 2. 잔돈반환 3. 메뉴선택 4. 종료=>");
             menuNum = sc.nextInt();
             switch (menuNum){
                 case 1:// 돈충전 끝
-                    userService.insertCoin();
+                    userService.insertCoin(loginDto);
+                    System.out.println("돈충전 완료");
                     break;
                 case 2://잔돈반환 끝
-                    userService.returnMoney();
+                    userService.returnMoney(loginDto);
                     break;
                 case 3://메뉴선택 해야됨
-                    userService.selectMenu();
+                    userService.selectMenu(loginDto);
                     break;
-                case 4://관리자메뉴 해야됨
-                    break;
-                case 5://종료 끝
+                case 4://종료 끝
                     return;
                 default:
                     System.out.println("다시 입력해주세요.");
