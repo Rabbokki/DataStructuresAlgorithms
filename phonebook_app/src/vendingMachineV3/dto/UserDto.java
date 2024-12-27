@@ -25,10 +25,8 @@ public class UserDto {
             updateDate = updateAt.format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         }
-        String str = String.format("%d \t %s \t %s \t %s \t %s \t %d \t \t" ,
-                uId, userId, pwd, userName , telNum , userMoney,createDate, updateDate);
-
-        return str;
+        return String.format("%d \t %s \t %s \t %s \t %s \t %d \t %s \t %s",
+                uId, userId, pwd, userName, telNum, userMoney, createDate, updateDate);
     }
 
     public LocalDateTime getCreatedAt() {

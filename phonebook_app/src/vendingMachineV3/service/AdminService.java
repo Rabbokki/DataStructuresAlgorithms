@@ -1,8 +1,11 @@
 package vendingMachineV3.service;
 
 import vendingMachineV3.dto.ProductDto;
+import vendingMachineV3.dto.UserDto;
 import vendingMachineV3.repository.AdminRepository;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Scanner;
 
 public class AdminService {
@@ -44,7 +47,53 @@ public class AdminService {
         return adminRepository.deleteMenu(sc.next());
     }
 
-    public int getAllMenu() {
+    public List<ProductDto> getAllMenu() {
         return adminRepository.getAllMenu();
     }
+
+    public int addUser(){
+        UserDto userDto = new UserDto();
+        System.out.println("회원 등록 메뉴입니다.\n" +
+                "회원에 아이디를 입력해주세요.");
+        userDto.setUserId(sc.next());
+        System.out.println("비밀번호를 입력해주세요.");
+        userDto.setPwd(sc.next());
+        System.out.println("이름을 입력해주세요.");
+        userDto.setUserName(sc.next());
+        System.out.println("전화번호를 입력해주세요.");
+        userDto.setTelNum(sc.next());
+        userDto.setUserMoney(0);
+        userDto.setCreatedAt(LocalDateTime.now());
+
+        if(adminRepository.addUser(userDto) > 0){
+            System.out.println("회원 등록 완료");
+            return 1;
+        }else {
+            System.out.println("회원 등록 실패");
+            return 0;
+        }
+    }
+
+
+    public int updateUser() {
+        System.out.println("수정할 회원 아이디를 입력하세요.");
+        return adminRepository.updateUser(sc.next());
+    }
+
+    public int deleteUser() {
+        System.out.println("수정할 회원 아이디를 입력하세요.");
+        return adminRepository.deleteUser(sc.next());
+    }
+
+    public List<UserDto> getAllUser() {
+        return adminRepository.getAllUser();
+    }
+
+//    public void productSales() {
+//        return adminRepository.productSales();
+//    }
+//
+//    public void userSales() {
+//        return adminRepository.userSales();
+//    }
 }

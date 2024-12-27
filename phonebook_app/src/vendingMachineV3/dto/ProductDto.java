@@ -2,6 +2,8 @@ package vendingMachineV3.dto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDto {
     private int pId;
@@ -10,16 +12,18 @@ public class ProductDto {
     private int stock;
     private boolean status = true;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updateAt;
+//    private LocalDateTime createdAt;
+//    private LocalDateTime updateAt;
 
     public ProductDto() {
     }
 
-    public ProductDto(String productName, int price, int stock) {
+    public ProductDto(int pId, String productName, int price, int stock, boolean status) {
+        this.pId = pId;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
+        this.status = status;
     }
 
     public boolean getStatus() {
@@ -32,34 +36,33 @@ public class ProductDto {
 
     @Override
     public String toString() {
-        String createDate = createdAt.format(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        String updateDate = "";
-        if(updateAt != null){
-            updateDate = updateAt.format(
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        }
-        String str = String.format("%l \t %s \t %d \t %d \t \t" ,
-                pId, productName, price, stock , createDate, updateDate);
+//        String createDate = createdAt.format(
+//                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+//        String updateDate = "";
+//        if(updateAt != null){
+//            updateDate = updateAt.format(
+//                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+//        }
+        String str = String.format("%d \t %s \t %d \t %d \t %b \t \t ",
+                pId, productName, price, stock, status);
 
         return str;
     }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
-    }
+//    public LocalDateTime getCreatedAt() {
+//        return createdAt;
+//    }
+//
+//    public void setCreatedAt(LocalDateTime createdAt) {
+//        this.createdAt = createdAt;
+//    }
+//
+//    public LocalDateTime getUpdateAt() {
+//        return updateAt;
+//    }
+//
+//    public void setUpdateAt(LocalDateTime updateAt) {
+//        this.updateAt = updateAt;
+//    }
 
     public int getpId() {
         return pId;

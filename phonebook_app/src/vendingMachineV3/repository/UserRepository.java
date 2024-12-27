@@ -4,29 +4,35 @@ import db.DBConn;
 import db.dto.TelBookDTO;
 import vendingMachineV3.db.DbConnect;
 import vendingMachineV3.dto.LoginDto;
+import vendingMachineV3.dto.ProductDto;
 import vendingMachineV3.dto.UserDto;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-public class UserRepository implements UserRepositoryInterface{
-//    Connection dbConn = DBConn.getConnection();
+public class UserRepository implements UserRepositoryInterface {
+    //    Connection dbConn = DBConn.getConnection();
     Connection dbConn = DbConnect.getConnection();
+    AdminRepository adminRepository;
     PreparedStatement psmt = null;
     String sql;
     int result = 0; //쿼리 실행 결과를 담을 변수(성공 : 양수, 실패 : 0)
 
-    public int register(UserDto userDto){
+    public int register(UserDto userDto) {
         System.out.println("회원가입 레포지토리");
         try {
-            sql="INSERT INTO userdto(userId, pwd, userName, telNum, createdAt) ";
-            sql= sql + "VALUES(?,?,?,?,?)";
+            sql = "INSERT INTO userdto(userId, pwd, userName, telNum, userMoney, createdAt) ";
+            sql = sql + "VALUES(?,?,?,?,?,?)";
             psmt = dbConn.prepareStatement(sql);
             //psmt에 값추가
             psmt.setString(1, userDto.getUserId());
             psmt.setString(2, userDto.getPwd());
             psmt.setString(3, userDto.getUserName());
             psmt.setString(4, userDto.getTelNum());
-            psmt.setTimestamp(5,Timestamp.valueOf(userDto.getCreatedAt()));
+            psmt.setInt(5, userDto.getUserMoney());
+            psmt.setTimestamp(6, Timestamp.valueOf(userDto.getCreatedAt()));
 
             return psmt.executeUpdate();
         } catch (SQLException e) {
@@ -48,29 +54,28 @@ public class UserRepository implements UserRepositoryInterface{
 
         try {
             psmt = dbConn.prepareStatement(sql);
-            psmt.setString(1,userId);
+            psmt.setString(1, userId);
             rs = psmt.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 String rsPwd = rs.getString("pwd");
-                if(!rsPwd.equals(pwd)){
+                if (!rsPwd.equals(pwd)) {
                     System.out.println("비밀번호 확인해주세요");
                     return 0;
                 }
                 System.out.println("로그인 성공");
                 return 1;
-            }else {
+            } else {
                 System.out.println("아이디를 확인해주세요");
                 return 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
             return 0;
-        }finally {
-            try{
-                if(rs != null) rs.close();
-                if(psmt != null) psmt.close();
-            }
-            catch (Exception e){
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (psmt != null) psmt.close();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -89,7 +94,8 @@ public class UserRepository implements UserRepositoryInterface{
 //        }
 
     }
-    public int insertCoin(LoginDto loginDto, int cMoney){
+
+    public int insertCoin(LoginDto loginDto, int cMoney) {
         System.out.println("돈충전 레포");
         String loginId = loginDto.getUserId();
 
@@ -99,8 +105,8 @@ public class UserRepository implements UserRepositoryInterface{
 
         try {
             psmt = dbConn.prepareStatement(sql);
-            psmt.setInt(1,cMoney);
-            psmt.setString(2,loginId);
+            psmt.setInt(1, cMoney);
+            psmt.setString(2, loginId);
 
             System.out.println("Executing SQL: " + sql);
             System.out.println("Parameters: userMoney=" + cMoney + ", userId=" + loginId);
@@ -123,6 +129,7 @@ public class UserRepository implements UserRepositoryInterface{
         }
         return 0; // 실패 시 반환값
     }
+
     public int returnMoney(LoginDto loginDto) {
         System.out.println("잔돈반환 레포");
         String loginId = loginDto.getUserId();
@@ -130,7 +137,7 @@ public class UserRepository implements UserRepositoryInterface{
         sql = "UPDATE userdto SET userMoney = 0 WHERE userId = ?";
         try {
             psmt = dbConn.prepareStatement(sql);
-            psmt.setString(1,loginId);
+            psmt.setString(1, loginId);
             int rowsAffected = psmt.executeUpdate();
 
             if (rowsAffected > 0) {
@@ -149,9 +156,63 @@ public class UserRepository implements UserRepositoryInterface{
     }
 
     public int selectMenu(LoginDto loginDto) {
-        System.out.println("메뉴선택 레포");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("메뉴 선택 레포");
         String loginId = loginDto.getUserId();
+        List<ProductDto> productDtoList = new ArrayList<>();
 
+        String productSql = "SELECT pId, productName, price, stock, status FROM productdto";
+        try (PreparedStatement psmt1 = dbConn.prepareStatement(productSql);
+             ResultSet rs = psmt1.executeQuery()) {
+            while (rs.next()) {
+                ProductDto productDto = new ProductDto();
+                productDto.setpId(rs.getInt("pId"));
+                productDto.setProductName(rs.getString("productName"));
+                productDto.setPrice(rs.getInt("price"));
+                productDto.setStock(rs.getInt("stock"));
+                productDto.setStatus(rs.getBoolean("status"));
+                productDtoList.add(productDto);
+            }
+            productDtoList.forEach(x -> System.out.println(x));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("원하는 제품명을 입력하세요.");
+        String item = sc.next();
+        for (ProductDto productDto : productDtoList) {
+            if (productDto.getProductName().equals(item)) {
+                String sql2 = "UPDATE userdto SET userMoney = userMoney - ? WHERE userId = ?";
+                String sql3 = "UPDATE productdto SET stock = stock - 1 WHERE productName = ?";
+                try (PreparedStatement psmt2 = dbConn.prepareStatement(sql2)) {
+                    psmt2.setInt(1, productDto.getPrice());
+                    psmt2.setString(2, loginId);
+                    int rowsAffected = psmt2.executeUpdate(); // 금액 차감 업데이트 실행
+
+                    if (rowsAffected > 0) {
+                        System.out.println("금액 차감이 성공적으로 완료되었습니다.");
+                    } else {
+                        System.out.println("사용자 정보가 없습니다.");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                // 재고 차감
+                try (PreparedStatement psmt3 = dbConn.prepareStatement(sql3)) {
+                    psmt3.setString(1, productDto.getProductName());
+                    int stockAffected = psmt3.executeUpdate(); // 재고 감소 업데이트 실행
+                    if (stockAffected > 0) {
+                        System.out.println("재고가 성공적으로 차감되었습니다.");
+                    } else {
+                        System.out.println("재고 차감에 실패했습니다.");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         return 0;
     }

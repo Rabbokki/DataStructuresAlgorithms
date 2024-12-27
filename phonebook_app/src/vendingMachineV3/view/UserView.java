@@ -30,6 +30,7 @@ public class UserView implements UserViewInterface {
         userDto.setUserName(sc.next());
         System.out.println("전화번호를 입력해주세요.");
         userDto.setTelNum(sc.next());
+        userDto.setUserMoney(0);
         userDto.setCreatedAt(LocalDateTime.now());
 
         int result = userService.registerService(userDto);

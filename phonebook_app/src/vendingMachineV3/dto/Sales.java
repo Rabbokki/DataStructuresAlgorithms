@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 public class Sales {
     private int sId;
-    private int amount;
     private int totalMoney;
     private LocalDateTime purchaseTime;
     private int pId;
@@ -18,13 +17,6 @@ public class Sales {
         this.sId = sId;
     }
 
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
 
     public int getTotalMoney() {
         return totalMoney;
