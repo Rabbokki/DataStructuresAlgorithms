@@ -85,18 +85,17 @@ public class UserView implements UserViewInterface {
     @Override
     public void userBuyView(LoginDto loginDto) {
         int menuNum = 0;
-        while (menuNum != 3){
+        while (menuNum > 0 || menuNum <= 4){
             System.out.println("1. 돈 충전 2. 잔돈반환 3. 메뉴선택 4. 종료=>");
             menuNum = sc.nextInt();
             switch (menuNum){
                 case 1:// 돈충전 끝
                     userService.insertCoin(loginDto);
-                    System.out.println("돈충전 완료");
                     break;
                 case 2://잔돈반환 끝
                     userService.returnMoney(loginDto);
                     break;
-                case 3://메뉴선택 해야됨
+                case 3://메뉴선택 끝
                     userService.selectMenu(loginDto);
                     break;
                 case 4://종료 끝

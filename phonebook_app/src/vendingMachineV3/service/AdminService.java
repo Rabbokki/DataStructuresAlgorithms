@@ -89,11 +89,11 @@ public class AdminService {
         return adminRepository.getAllUser();
     }
 
-//    public void productSales() {
-//        return adminRepository.productSales();
-//    }
+    public int productSales() {
+        return adminRepository.productSales();
+    }
 //
-//    public void userSales() {
+//    public int userSales() {
 //        return adminRepository.userSales();
 //    }
 }

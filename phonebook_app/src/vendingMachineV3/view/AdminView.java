@@ -38,10 +38,10 @@ public class AdminView {
             menuNum = sc.nextInt();
             switch (menuNum){
                 case 1:
-//                    adminService.productSales(); // 물건 추가 완료
+                    adminService.productSales(); // 제품별 판매현황
                     break;
                 case 2:
-//                    adminService.userSales(); //물건 수정 완료
+//                    adminService.userSales(); //회원별 판매현황
                     break;
                 case 3:
                     return; //종료 완료

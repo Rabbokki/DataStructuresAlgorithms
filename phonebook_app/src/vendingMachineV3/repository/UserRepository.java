@@ -108,12 +108,9 @@ public class UserRepository implements UserRepositoryInterface {
             psmt.setInt(1, cMoney);
             psmt.setString(2, loginId);
 
-            System.out.println("Executing SQL: " + sql);
-            System.out.println("Parameters: userMoney=" + cMoney + ", userId=" + loginId);
-
             int rowsAffected = psmt.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("돈 충전 성공: " + rowsAffected + " rows updated.");
+                System.out.println("돈 충전 성공: ");
             } else {
                 System.out.println("충전 실패: 해당 userId가 존재하지 않음.");
             }
@@ -131,7 +128,6 @@ public class UserRepository implements UserRepositoryInterface {
     }
 
     public int returnMoney(LoginDto loginDto) {
-        System.out.println("잔돈반환 레포");
         String loginId = loginDto.getUserId();
 
         sql = "UPDATE userdto SET userMoney = 0 WHERE userId = ?";
@@ -160,6 +156,20 @@ public class UserRepository implements UserRepositoryInterface {
         System.out.println("메뉴 선택 레포");
         String loginId = loginDto.getUserId();
         List<ProductDto> productDtoList = new ArrayList<>();
+        int uId = 0;
+
+        String userSql = "SELECT uId FROM userdto WHERE userId = ?";
+        try (PreparedStatement psmtt = dbConn.prepareStatement(userSql)) {
+            psmtt.setString(1,loginId);
+            ResultSet rs = psmtt.executeQuery();
+            if(rs.next()){
+                uId = rs.getInt("uId");
+            }else {
+                System.out.println("사용자가 없다");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         String productSql = "SELECT pId, productName, price, stock, status FROM productdto";
         try (PreparedStatement psmt1 = dbConn.prepareStatement(productSql);
@@ -184,7 +194,6 @@ public class UserRepository implements UserRepositoryInterface {
         for (ProductDto productDto : productDtoList) {
             if (productDto.getProductName().equals(item)) {
                 String sql2 = "UPDATE userdto SET userMoney = userMoney - ? WHERE userId = ?";
-                String sql3 = "UPDATE productdto SET stock = stock - 1 WHERE productName = ?";
                 try (PreparedStatement psmt2 = dbConn.prepareStatement(sql2)) {
                     psmt2.setInt(1, productDto.getPrice());
                     psmt2.setString(2, loginId);
@@ -200,6 +209,7 @@ public class UserRepository implements UserRepositoryInterface {
                 }
 
                 // 재고 차감
+                String sql3 = "UPDATE productdto SET stock = stock - 1 WHERE productName = ?";
                 try (PreparedStatement psmt3 = dbConn.prepareStatement(sql3)) {
                     psmt3.setString(1, productDto.getProductName());
                     int stockAffected = psmt3.executeUpdate(); // 재고 감소 업데이트 실행
@@ -209,6 +219,20 @@ public class UserRepository implements UserRepositoryInterface {
                         System.out.println("재고 차감에 실패했습니다.");
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String sql4 = "INSERT INTO sales(pId, uId, purchaseTime) VALUES(?,?,NOW())";
+                try (PreparedStatement psmt4 = dbConn.prepareStatement(sql4)) {
+                    psmt4.setInt(1,productDto.getpId());
+                    psmt4.setInt(2,uId);
+                    int result = psmt4.executeUpdate();
+
+                    if (result > 0){
+                        System.out.println("판매 기록이 저장 완료");
+                    }else {
+                        System.out.println("판매기록 저장 실패");
+                    }
+                }catch (Exception e){
                     e.printStackTrace();
                 }
             }

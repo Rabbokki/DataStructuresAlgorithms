@@ -265,10 +265,29 @@ public class AdminRepository implements AdminRepositoryInterface {
         return userDtoList;
     }
 
-    public void productSales() {
+    public int productSales() {
+        sql = "SELECT p.productName AS 제품명, COUNT(p.pId) AS `팔린 개수`, SUM(p.price) AS `총 금액` " +
+                "FROM sales s " +
+                "JOIN productdto p ON s.pId = p.pId " +
+                "GROUP BY p.productName";
+        try (PreparedStatement psmt = dbConn.prepareStatement(sql);
+        ResultSet rs = psmt.executeQuery()) {
+            while (rs.next()){
+                String pName = rs.getString("제품명");
+                int count = rs.getInt("팔린 개수");
+                int sum = rs.getInt("총 금액");
+                System.out.println("제품명 : " + pName + ", 팔린 개수 : " + count + ", 총 금액 : " + sum);
+            }
 
-    }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
 
-    public void userSales() {
+        return 0;
     }
+//
+//    public int userSales() {
+//        return 0;
+//    }
 }

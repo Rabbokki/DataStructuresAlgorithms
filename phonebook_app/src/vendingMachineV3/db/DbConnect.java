@@ -12,7 +12,7 @@ public class DbConnect {
         if (dbConn == null) {
             String dbDriver = "com.mysql.cj.jdbc.Driver";
             String dbUrl = "jdbc:mysql://localhost:3306/vMachine_db";
-            String dbUser = "vuser";
+            String dbUser = "root";
             String dbPassword = "1111";
 
             try {
