@@ -47,6 +47,7 @@ public class AdminRepository implements AdminRepositoryInterface {
         return dtoList;
     }
 
+    @Override
     public int addMenu(ProductDto productDto) {
         System.out.println("메뉴추가 레포");
         sql = "INSERT INTO productdto(productName, price, stock, status) VALUES(?,?,?,?)";
@@ -65,14 +66,29 @@ public class AdminRepository implements AdminRepositoryInterface {
         return 0;
     }
 
+    @Override
     public int updateMenu(String findName) {
-        System.out.println(findName + "의 이름을 무엇으로 변경할거냐");
-        String changeName = sc.next();
-        System.out.println("가격은 무엇으로 수정할거?");
-        int changePrice = sc.nextInt();
-        System.out.println("재고는 몇으로 수정할거?");
-        int changeStock = sc.nextInt();
-        System.out.println("판매중으로 할거냐?");
+        String changeName = "";
+        int changePrice = 0;
+        int changeStock = 0;
+
+        System.out.println(findName + "의 이름을 수정하시겠습니까?");
+        if (sc.next().equalsIgnoreCase("y")) {
+            System.out.println(findName + "의 이름을 무엇으로 수정하시겠습니까?");
+            changeName = sc.next();
+        }
+        System.out.println("가격을 수정하시겠습니까?");
+        if (sc.next().equalsIgnoreCase("y")) {
+            System.out.println("가격을 얼마로 수정하시겠습니까?");
+            changePrice = sc.nextInt();
+        }
+        System.out.println("재고를 수정하시겠습니까?");
+        if (sc.next().equalsIgnoreCase("y")) {
+            changeStock = sc.nextInt();
+        }
+
+
+        System.out.println("판매중인 상품으로 등록하시겠습니까?");
         String y = sc.next();
 
         sql = "UPDATE productdto SET productName = ?, price = ?, stock = ?, status = ? ";
@@ -88,11 +104,11 @@ public class AdminRepository implements AdminRepositoryInterface {
                 psmt.setBoolean(4, false);
             }
             psmt.setString(5, findName);
-            int rowsAffected = psmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("수정 성공");
+            int result = psmt.executeUpdate();
+            if (result > 0) {
+                System.out.println("메뉴 수정 완료했습니다.");
             } else {
-                System.out.println("수정 실패");
+                System.out.println("메뉴 수정 실패했습니다.");
             }
         } catch (SQLException e) {
             System.out.println(
@@ -103,16 +119,17 @@ public class AdminRepository implements AdminRepositoryInterface {
         return 0;
     }
 
+    @Override
     public int deleteMenu(String findName) {
         sql = "DELETE FROM productdto WHERE productName = ?";
         try {
             psmt = dbConn.prepareStatement(sql);
             psmt.setString(1, findName);
-            int rowsAffected = psmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("삭제 성공");
+            int result = psmt.executeUpdate();
+            if (result > 0) {
+                System.out.println("유저 삭제 성공했습니다.");
             } else {
-                System.out.println("삭제 실패");
+                System.out.println("유저 삭제 실패했습니다.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -122,6 +139,7 @@ public class AdminRepository implements AdminRepositoryInterface {
         return 0;
     }
 
+    @Override
     public List<ProductDto> getAllMenu() {
         sql = "SELECT * FROM productdto";
         List<ProductDto> productDtoList = new ArrayList<>();
@@ -149,8 +167,8 @@ public class AdminRepository implements AdminRepositoryInterface {
         return productDtoList;
     }
 
+    @Override
     public int addUser(UserDto userDto) {
-        System.out.println("유저입력 레포지토리");
         try {
             sql = "INSERT INTO userdto(userId, pwd, userName, telNum, createdAt) ";
             sql = sql + "VALUES(?,?,?,?,?,?)";
@@ -171,6 +189,7 @@ public class AdminRepository implements AdminRepositoryInterface {
         return 0;
     }
 
+    @Override
     public int updateUser(String findId) {
         String changePwd = "";
         String changeName = "";
@@ -180,11 +199,13 @@ public class AdminRepository implements AdminRepositoryInterface {
         if (sc.next().equalsIgnoreCase("y")) {
             System.out.println("수정할 비밀번호 입력");
             changePwd = sc.next();
-        }System.out.println("이름을 수정하시겠습니까?");
+        }
+        System.out.println("이름을 수정하시겠습니까?");
         if (sc.next().equalsIgnoreCase("y")) {
             System.out.println("수정할 이름 입력");
             changeName = sc.next();
-        }System.out.println("전화번호를 수정하시겠습니까?");
+        }
+        System.out.println("전화번호를 수정하시겠습니까?");
         if (sc.next().equalsIgnoreCase("y")) {
             System.out.println("수정 전화번호 입력");
             changeNum = sc.next();
@@ -193,17 +214,17 @@ public class AdminRepository implements AdminRepositoryInterface {
         sql = "UPDATE userdto SET pwd = ?, userName = ?, telNum = ?, updateAt = ? WHERE userId = ?";
         try {
             psmt = dbConn.prepareStatement(sql);
-            psmt.setString(1,changePwd);
-            psmt.setString(2,changeName);
-            psmt.setString(3,changeNum);
+            psmt.setString(1, changePwd);
+            psmt.setString(2, changeName);
+            psmt.setString(3, changeNum);
             psmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
-            psmt.setString(5,findId);
+            psmt.setString(5, findId);
 
             int rowsAffected = psmt.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("수정 성공");
+                System.out.println("유저 정보 수정을 완료했습니다.");
             } else {
-                System.out.println("수정 실패");
+                System.out.println("유저 정보 수정 실패 했습니다.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -213,16 +234,17 @@ public class AdminRepository implements AdminRepositoryInterface {
         return 0;
     }
 
+    @Override
     public int deleteUser(String findId) {
         sql = "DELETE FROM userdto WHERE userId = ?";
         try {
             psmt = dbConn.prepareStatement(sql);
-            psmt.setString(1,findId);
+            psmt.setString(1, findId);
             int rowsAffected = psmt.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("삭제 성공");
+                System.out.println("유저 삭제를 완료했습니다.");
             } else {
-                System.out.println("삭제 실패");
+                System.out.println("유저 삭제 실패 했습니다.");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -230,6 +252,8 @@ public class AdminRepository implements AdminRepositoryInterface {
 
         return 0;
     }
+
+    @Override
     public List<UserDto> getAllUser() {
         sql = "SELECT * FROM userdto";
         List<UserDto> userDtoList = new ArrayList<>();
@@ -247,7 +271,7 @@ public class AdminRepository implements AdminRepositoryInterface {
                 userDto.setUserMoney(rs.getInt("userMoney"));
                 userDto.setCreatedAt(rs.getTimestamp("createdAt")
                         .toLocalDateTime());
-                if(rs.getTimestamp("updateAt") != null){
+                if (rs.getTimestamp("updateAt") != null) {
                     userDto.setUpdateAt(rs.getTimestamp("updateAt")
                             .toLocalDateTime());
                 }
@@ -265,29 +289,50 @@ public class AdminRepository implements AdminRepositoryInterface {
         return userDtoList;
     }
 
+    @Override
     public int productSales() {
         sql = "SELECT p.productName AS 제품명, COUNT(p.pId) AS `팔린 개수`, SUM(p.price) AS `총 금액` " +
                 "FROM sales s " +
                 "JOIN productdto p ON s.pId = p.pId " +
                 "GROUP BY p.productName";
         try (PreparedStatement psmt = dbConn.prepareStatement(sql);
-        ResultSet rs = psmt.executeQuery()) {
-            while (rs.next()){
+             ResultSet rs = psmt.executeQuery()) {
+            while (rs.next()) {
                 String pName = rs.getString("제품명");
                 int count = rs.getInt("팔린 개수");
                 int sum = rs.getInt("총 금액");
                 System.out.println("제품명 : " + pName + ", 팔린 개수 : " + count + ", 총 금액 : " + sum);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
 
         return 0;
     }
-//
-//    public int userSales() {
-//        return 0;
-//    }
+
+    @Override
+    public int userSales() {
+        sql = "SELECT u.userId AS 아이디, u.userName AS 이름, SUM(p.price) AS 구매금액, u.userMoney AS 충전잔액 " +
+                "FROM sales s JOIN userdto u on s.uId = u.uId " +
+                "JOIN productdto p on p.pId = s.pId " +
+                "GROUP BY u.userId, u.userName, u.userMoney";
+        try (PreparedStatement psmt = dbConn.prepareStatement(sql);
+             ResultSet rs = psmt.executeQuery()) {
+            while (rs.next()) {
+                String userId = rs.getString("아이디");
+                String uName = rs.getString("이름");
+                int sum = rs.getInt("구매금액");
+                int userMoney = rs.getInt("충전잔액");
+
+                System.out.println("아이디: " + userId + " 이름: " + uName + " 구매금액: " + sum + " 충전잔액: " + userMoney);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
 }

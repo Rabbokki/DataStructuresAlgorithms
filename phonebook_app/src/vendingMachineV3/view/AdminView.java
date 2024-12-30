@@ -5,14 +5,15 @@ import vendingMachineV3.service.AdminService;
 
 import java.util.Scanner;
 
-public class AdminView {
+public class AdminView implements AdminViewInterface {
     Scanner sc = new Scanner(System.in);
     AdminService adminService = new AdminService();
+    @Override
     public void mainAdminView(){
         System.out.println("관리자 메뉴입니다.\n" +
                 "메뉴를 선택하세요.");
         int menuNum = 0;
-        while (menuNum != 3){
+        while (menuNum >=1 || menuNum < 4){
             System.out.println("1: 자판기 관리 2: 회원 관리 3: 판매 관리 4. 종료=>");
             menuNum = sc.nextInt();
             switch (menuNum){
@@ -29,8 +30,8 @@ public class AdminView {
             }
         }
     }
-
-    private void salesManagerView() {
+    @Override
+    public void salesManagerView() {
         int menuNum = 0;
         while (menuNum>=1 || menuNum < 3){
             System.out.println("판매 관리 메뉴 입니다. \n" +
@@ -41,14 +42,14 @@ public class AdminView {
                     adminService.productSales(); // 제품별 판매현황
                     break;
                 case 2:
-//                    adminService.userSales(); //회원별 판매현황
+                    adminService.userSales(); //회원별 판매현황
                     break;
                 case 3:
                     return; //종료 완료
             }
         }
     }
-
+    @Override
     public void productManagerView(){
         int menuNum = 0;
         while (menuNum>=1 || menuNum < 5){
@@ -73,6 +74,7 @@ public class AdminView {
             }
         }
     }
+    @Override
     public void userManagerView(){
         int menuNum = 0;
         while (menuNum>=1 || menuNum < 5){

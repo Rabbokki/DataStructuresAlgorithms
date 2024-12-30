@@ -21,7 +21,6 @@ public class UserRepository implements UserRepositoryInterface {
     int result = 0; //쿼리 실행 결과를 담을 변수(성공 : 양수, 실패 : 0)
 
     public int register(UserDto userDto) {
-        System.out.println("회원가입 레포지토리");
         try {
             sql = "INSERT INTO userdto(userId, pwd, userName, telNum, userMoney, createdAt) ";
             sql = sql + "VALUES(?,?,?,?,?,?)";
@@ -43,8 +42,6 @@ public class UserRepository implements UserRepositoryInterface {
 
     @Override
     public int login(LoginDto loginDto) {
-        System.out.println("로그인 레포");
-
         String userId = loginDto.getUserId();
         String pwd = loginDto.getPwd();
 
@@ -95,11 +92,9 @@ public class UserRepository implements UserRepositoryInterface {
 
     }
 
+    @Override
     public int insertCoin(LoginDto loginDto, int cMoney) {
-        System.out.println("돈충전 레포");
         String loginId = loginDto.getUserId();
-
-
         sql = "UPDATE userdto SET userMoney = userMoney + ? WHERE userId = ?";
 
 
@@ -108,13 +103,13 @@ public class UserRepository implements UserRepositoryInterface {
             psmt.setInt(1, cMoney);
             psmt.setString(2, loginId);
 
-            int rowsAffected = psmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("돈 충전 성공: ");
+            result = psmt.executeUpdate();
+            if (result > 0) {
+                System.out.println("금액이 충전 되었습니다.");
             } else {
                 System.out.println("충전 실패: 해당 userId가 존재하지 않음.");
             }
-            return rowsAffected;
+            return result;
         } catch (SQLException e) {
             // SQL 예외 처리
             System.out.println("SQL Error: " + e.getMessage());
@@ -126,7 +121,7 @@ public class UserRepository implements UserRepositoryInterface {
         }
         return 0; // 실패 시 반환값
     }
-
+    @Override
     public int returnMoney(LoginDto loginDto) {
         String loginId = loginDto.getUserId();
 
@@ -134,14 +129,14 @@ public class UserRepository implements UserRepositoryInterface {
         try {
             psmt = dbConn.prepareStatement(sql);
             psmt.setString(1, loginId);
-            int rowsAffected = psmt.executeUpdate();
+            int result = psmt.executeUpdate();
 
-            if (rowsAffected > 0) {
-                System.out.println("잔돈 반환 성공 ");
+            if (result > 0) {
+                System.out.println("잔돈 반환이 완료 되었습니다. ");
             } else {
                 System.out.println("반환 실패: 해당 userId가 존재하지 않음.");
             }
-            return rowsAffected;
+            return result;
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -150,10 +145,9 @@ public class UserRepository implements UserRepositoryInterface {
 
         return 0;
     }
-
+    @Override
     public int selectMenu(LoginDto loginDto) {
         Scanner sc = new Scanner(System.in);
-        System.out.println("메뉴 선택 레포");
         String loginId = loginDto.getUserId();
         List<ProductDto> productDtoList = new ArrayList<>();
         int uId = 0;
@@ -165,12 +159,13 @@ public class UserRepository implements UserRepositoryInterface {
             if(rs.next()){
                 uId = rs.getInt("uId");
             }else {
-                System.out.println("사용자가 없다");
+                System.out.println("사용자가 없습니다.");
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
+        //물건들 보여주기
         String productSql = "SELECT pId, productName, price, stock, status FROM productdto";
         try (PreparedStatement psmt1 = dbConn.prepareStatement(productSql);
              ResultSet rs = psmt1.executeQuery()) {
@@ -189,17 +184,21 @@ public class UserRepository implements UserRepositoryInterface {
             e.printStackTrace();
         }
 
+        //물건 사기
         System.out.println("원하는 제품명을 입력하세요.");
         String item = sc.next();
         for (ProductDto productDto : productDtoList) {
             if (productDto.getProductName().equals(item)) {
                 String sql2 = "UPDATE userdto SET userMoney = userMoney - ? WHERE userId = ?";
                 try (PreparedStatement psmt2 = dbConn.prepareStatement(sql2)) {
+                    if(productDto.getStatus()==false){
+                        System.out.println("해당 물건은 판매 중지 되었습니다.");
+                    }
                     psmt2.setInt(1, productDto.getPrice());
                     psmt2.setString(2, loginId);
-                    int rowsAffected = psmt2.executeUpdate(); // 금액 차감 업데이트 실행
+                    result = psmt2.executeUpdate(); // 금액 차감 업데이트 실행
 
-                    if (rowsAffected > 0) {
+                    if (result > 0) {
                         System.out.println("금액 차감이 성공적으로 완료되었습니다.");
                     } else {
                         System.out.println("사용자 정보가 없습니다.");
@@ -228,7 +227,7 @@ public class UserRepository implements UserRepositoryInterface {
                     int result = psmt4.executeUpdate();
 
                     if (result > 0){
-                        System.out.println("판매 기록이 저장 완료");
+                        System.out.println("판매기록 저장 완료");
                     }else {
                         System.out.println("판매기록 저장 실패");
                     }
@@ -239,40 +238,5 @@ public class UserRepository implements UserRepositoryInterface {
         }
 
         return 0;
-    }
-
-    @Override
-    public UserDto findById(int uId) {
-//        System.out.println("[PhoneBookRepository]-findById");
-        UserDto dto = new UserDto();
-        ResultSet rs = null;
-
-        sql = "SELECT * FROM userdto WHERE uId = ?";
-        try {
-            psmt = dbConn.prepareStatement(sql);
-            psmt.setLong(1, uId);
-            rs = psmt.executeQuery();
-
-            if (rs != null) {
-                while (rs.next()) {
-                    dto.setuId(rs.getInt("uId"));
-                    dto.setUserId(rs.getString("userId"));
-                    dto.setPwd(rs.getString("pwd"));
-                    dto.setUserName(rs.getString("userName"));
-                    dto.setTelNum(rs.getString("telNum"));
-                    dto.setUserMoney(rs.getInt("userMoney"));
-                    dto.setCreatedAt(rs.getTimestamp("createdAt")
-                            .toLocalDateTime());
-                    if (rs.getTimestamp("updateAt") != null) {
-                        dto.setUpdateAt(rs.getTimestamp("updateAt")
-                                .toLocalDateTime());
-                    }
-                }
-            }
-            return dto;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

@@ -17,9 +17,9 @@ public class AdminService {
         productDto.setProductName(sc.next());
         System.out.println("가격을 입력해주세요.");
         productDto.setPrice(sc.nextInt());
-        System.out.println("재고를 추가해주세요.");
+        System.out.println("재고를 입력해주세요.");
         productDto.setStock(sc.nextInt());
-        System.out.println("판매 가능한 상품으로 등록할거요?");
+        System.out.println("판매 가능한 상품으로 등록하시겠습니까?");
         if(sc.next().equalsIgnoreCase("y")){
             productDto.setStatus(true);
         }else {
@@ -66,10 +66,10 @@ public class AdminService {
         userDto.setCreatedAt(LocalDateTime.now());
 
         if(adminRepository.addUser(userDto) > 0){
-            System.out.println("회원 등록 완료");
+            System.out.println("회원 등록을 완료했습니다.");
             return 1;
         }else {
-            System.out.println("회원 등록 실패");
+            System.out.println("회원 등록을 실패했습니다.");
             return 0;
         }
     }
@@ -81,7 +81,7 @@ public class AdminService {
     }
 
     public int deleteUser() {
-        System.out.println("수정할 회원 아이디를 입력하세요.");
+        System.out.println("삭제할 회원 아이디를 입력하세요.");
         return adminRepository.deleteUser(sc.next());
     }
 
@@ -92,8 +92,8 @@ public class AdminService {
     public int productSales() {
         return adminRepository.productSales();
     }
-//
-//    public int userSales() {
-//        return adminRepository.userSales();
-//    }
+
+    public int userSales() {
+        return adminRepository.userSales();
+    }
 }

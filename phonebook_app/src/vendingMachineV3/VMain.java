@@ -22,7 +22,7 @@ public class VMain {
                 case 1:
                     if (userView.registerView()==true){
                         break;
-                    }else return;
+                    }else break;
                 case 2:
                     LoginDto loginDto = userView.loginView();
                     if(loginDto == null){
@@ -30,7 +30,7 @@ public class VMain {
                     }else {
                         userView.userBuyView(loginDto);
                     }break;
-                case 1004:
+                case 1004://관리자
                     adminView.mainAdminView();
                     break;
             }
