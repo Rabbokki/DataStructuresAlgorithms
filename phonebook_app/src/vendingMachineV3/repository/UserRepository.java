@@ -151,13 +151,15 @@ public class UserRepository implements UserRepositoryInterface {
         String loginId = loginDto.getUserId();
         List<ProductDto> productDtoList = new ArrayList<>();
         int uId = 0;
+        int myMoney = 0;
 
-        String userSql = "SELECT uId FROM userdto WHERE userId = ?";
+        String userSql = "SELECT uId, userMoney FROM userdto WHERE userId = ?";
         try (PreparedStatement psmtt = dbConn.prepareStatement(userSql)) {
             psmtt.setString(1,loginId);
             ResultSet rs = psmtt.executeQuery();
             if(rs.next()){
                 uId = rs.getInt("uId");
+                myMoney = rs.getInt("userMoney");
             }else {
                 System.out.println("사용자가 없습니다.");
             }
@@ -185,10 +187,15 @@ public class UserRepository implements UserRepositoryInterface {
         }
 
         //물건 사기
+        System.out.println("잔액 : " + myMoney);
         System.out.println("원하는 제품명을 입력하세요.");
         String item = sc.next();
         for (ProductDto productDto : productDtoList) {
             if (productDto.getProductName().equals(item)) {
+                if(myMoney==0 || productDto.getPrice() > myMoney){
+                    System.out.println("잔액이 0원이거나 잔액이 부족하여 해당 상품을 구매할 수 없습니다. 금액을 충전해주세요.");
+                    return 0;
+                }
                 String sql2 = "UPDATE userdto SET userMoney = userMoney - ? WHERE userId = ?";
                 try (PreparedStatement psmt2 = dbConn.prepareStatement(sql2)) {
                     if(productDto.getStatus()==false){

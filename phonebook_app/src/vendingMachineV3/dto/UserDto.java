@@ -25,8 +25,16 @@ public class UserDto {
             updateDate = updateAt.format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         }
-        return String.format("%d \t %s \t %s \t %s \t %s \t %d \t %s \t %s",
+
+        System.out.printf(
+                "%-5s | %-10s | %-10s | %-10s | %-15s | %-10s | %-20s | %-20s%n",
+                "uId", "userId", "pwd", "userName", "telNum", "userMoney", "createDate", "updateDate"
+        );
+        System.out.println("---------------------------------------------------------------------------------------------");
+        return String.format("%-5d | %-10s | %-10s | %-10s | %-15s | %-10d | %-20s | %-20s\n" +
+                        "---------------------------------------------------------------------------------------------",
                 uId, userId, pwd, userName, telNum, userMoney, createDate, updateDate);
+
     }
 
     public LocalDateTime getCreatedAt() {

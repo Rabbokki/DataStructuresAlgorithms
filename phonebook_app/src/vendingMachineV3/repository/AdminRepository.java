@@ -214,9 +214,9 @@ public class AdminRepository implements AdminRepositoryInterface {
         sql = "UPDATE userdto SET pwd = ?, userName = ?, telNum = ?, updateAt = ? WHERE userId = ?";
         try {
             psmt = dbConn.prepareStatement(sql);
-            psmt.setString(1, changePwd);
-            psmt.setString(2, changeName);
-            psmt.setString(3, changeNum);
+            if(!changePwd.equals(""))psmt.setString(1, changePwd);
+            if(!changeName.equals(""))psmt.setString(2, changeName);
+            if(!changeNum.equals(""))psmt.setString(3, changeNum);
             psmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
             psmt.setString(5, findId);
 
