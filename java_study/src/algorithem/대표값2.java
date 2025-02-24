@@ -22,5 +22,12 @@ public class 대표값2 {
         mid = arr[arr.length/2];
         System.out.println(mid);
         System.out.println(avg);
+        System.out.println(avg);
+        System.out.println(avg);
+        System.out.println(avg);
+        System.out.println(avg);
+        System.out.println(avg);
+        System.out.println(avg);
+        System.out.println(avg);
     }
 }
