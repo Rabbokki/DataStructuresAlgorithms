@@ -12,5 +12,18 @@ public class 좌표정렬하기 {
         System.out.println("asdasdasd");
         System.out.println("asdasdasd");
         System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
+        System.out.println("asdasdasd");
     }
 }
